@@ -16,6 +16,9 @@ import {
   Clock,
   CalendarDays,
   X,
+  FileText,
+  TrendingDown,
+  TrendingUp,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -185,6 +188,33 @@ export const PacienteDetalhesPage: React.FC = () => {
   // Modal para ver plano alimentar completo
   const [planoSelecionado, setPlanoSelecionado] = useState<PlanoAlimentarItem | null>(null);
 
+  // Preenche o formulário com dados do paciente para edição direta
+  const preencherFormulario = (p: PacienteData) => {
+    setEditNome(p.nome || "");
+    setEditDataNascimento(p.data_nascimento ? p.data_nascimento.split("T")[0] : "");
+    setEditSexo(p.sexo || "");
+    setEditTelefone(p.telefone || "");
+    setEditWhatsapp(p.whatsapp || "");
+    setEditEmail(p.email || "");
+    setEditPesoInicial(p.peso_inicial !== null ? String(p.peso_inicial) : "");
+    setEditAltura(p.altura !== null ? String(p.altura) : "");
+    setEditObjetivos(p.objetivos || []);
+    setEditObjetivoTexto(p.objetivo_texto || "");
+    setEditNivelAtividade(p.nivel_atividade || "");
+    setEditPatologias(p.patologias || []);
+    setEditRestricoes(p.restricoes_alimentares || []);
+    setEditAlergias(p.alergias || []);
+    setEditMedicamentos(p.medicamentos || "");
+    setEditSuplementos(p.suplementos || "");
+    setEditRefeicoesPorDia(p.refeicoes_por_dia !== null ? String(p.refeicoes_por_dia) : "");
+    setEditHorarioAcorda(p.horario_acorda || "");
+    setEditHorarioDorme(p.horario_dorme || "");
+    setEditLitrosAgua(p.litros_agua !== null ? String(p.litros_agua) : "");
+    setEditAtividadeFisica(p.atividade_fisica);
+    setEditAtividadeFisicaDescricao(p.atividade_fisica_descricao || "");
+    setEditObservacoes(p.observacoes || "");
+  };
+
   // Carregar dados iniciais em tempo real
   const carregarTudo = async () => {
     if (!id || !user?.id) return;
@@ -229,33 +259,6 @@ export const PacienteDetalhesPage: React.FC = () => {
   useEffect(() => {
     carregarTudo();
   }, [id, user]);
-
-  // Preenche o formulário com dados do paciente para edição direta
-  const preencherFormulario = (p: PacienteData) => {
-    setEditNome(p.nome || "");
-    setEditDataNascimento(p.data_nascimento ? p.data_nascimento.split("T")[0] : "");
-    setEditSexo(p.sexo || "");
-    setEditTelefone(p.telefone || "");
-    setEditWhatsapp(p.whatsapp || "");
-    setEditEmail(p.email || "");
-    setEditPesoInicial(p.peso_inicial !== null ? String(p.peso_inicial) : "");
-    setEditAltura(p.altura !== null ? String(p.altura) : "");
-    setEditObjetivos(p.objetivos || []);
-    setEditObjetivoTexto(p.objetivo_texto || "");
-    setEditNivelAtividade(p.nivel_atividade || "");
-    setEditPatologias(p.patologias || []);
-    setEditRestricoes(p.restricoes_alimentares || []);
-    setEditAlergias(p.alergias || []);
-    setEditMedicamentos(p.medicamentos || "");
-    setEditSuplementos(p.suplementos || "");
-    setEditRefeicoesPorDia(p.refeicoes_por_dia !== null ? String(p.refeicoes_por_dia) : "");
-    setEditHorarioAcorda(p.horario_acorda || "");
-    setEditHorarioDorme(p.horario_dorme || "");
-    setEditLitrosAgua(p.litros_agua !== null ? String(p.litros_agua) : "");
-    setEditAtividadeFisica(p.atividade_fisica);
-    setEditAtividadeFisicaDescricao(p.atividade_fisica_descricao || "");
-    setEditObservacoes(p.observacoes || "");
-  };
 
   // Cálculo da Idade
   const idadeCalculada = useMemo(() => {
