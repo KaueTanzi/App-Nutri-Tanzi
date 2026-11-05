@@ -80,6 +80,7 @@ export const PacienteNovoPage: React.FC = () => {
 
   // --- Aba 1: Pessoal ---
   const [nome, setNome] = useState("");
+  const [dataInsercaoTratamento, setDataInsercaoTratamento] = useState(() => new Date().toISOString().split("T")[0]);
   const [dataNascimento, setDataNascimento] = useState("");
   const [sexo, setSexo] = useState<string>("");
   const [telefone, setTelefone] = useState("");
@@ -324,6 +325,28 @@ export const PacienteNovoPage: React.FC = () => {
 
       if (result && result.length > 0) {
         const newPatientId = result[0].id;
+
+        // Se informou peso inicial e data de início do tratamento, registra como primeira consulta
+        if (dataInsercaoTratamento) {
+          try {
+            await sql`
+              INSERT INTO consultas (
+                paciente_id,
+                data_consulta,
+                peso,
+                observacoes
+              ) VALUES (
+                ${newPatientId},
+                ${dataInsercaoTratamento},
+                ${pesoNum},
+                ${"Primeira consulta (Início do tratamento)"}
+              )
+            `;
+          } catch (consErr) {
+            console.error("Erro ao registrar consulta inicial:", consErr);
+          }
+        }
+
         setSuccessMessage(`Paciente ${result[0].nome} cadastrado com sucesso!`);
         // Redireciona para o perfil do paciente recém-cadastrado
         setTimeout(() => {
@@ -463,6 +486,23 @@ export const PacienteNovoPage: React.FC = () => {
                   onChange={(e) => setNome(e.target.value)}
                   required
                 />
+              </div>
+
+              {/* Data de Início do Tratamento (registrada como 1ª consulta) */}
+              <div className="space-y-1.5 sm:col-span-2">
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Data de Início do Tratamento (Primeira Consulta)
+                </label>
+                <div className="relative max-w-sm">
+                  <Input
+                    type="date"
+                    value={dataInsercaoTratamento}
+                    onChange={(e) => setDataInsercaoTratamento(e.target.value)}
+                  />
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  Esta data será registrada automaticamente como a primeira consulta do paciente.
+                </p>
               </div>
 
               {/* Data de Nascimento com cálculo de idade */}
